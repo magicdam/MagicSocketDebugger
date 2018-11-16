@@ -29,6 +29,8 @@ private slots:
     void on_sendButton_clicked();
     void keyPressEvent(QKeyEvent  *event);
     void on_receiveClearButton_clicked();
+    void on_pingCheckBox_stateChanged(int state);
+    void on_ping_interval_time_timeout();
 
 private:
     Ui::MainWindow *ui;
@@ -36,6 +38,7 @@ private:
     QTcpSocket* qTcpSocket;
     void receiveEdit_append(QString qString);
     void tcp_sendData();
+    QTimer *timer;
 
 };
 
