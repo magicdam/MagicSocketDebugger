@@ -10,8 +10,8 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-//    QString msg="程序启动";
-//    qDebug() << msg.toStdString().data();
+    this->timer=nullptr;
+    this->qTcpSocket=nullptr;
 
     ui->urlLineEdit->setFocus();
     QWidget::setTabOrder(ui->urlLineEdit,ui->portLineEdit);
