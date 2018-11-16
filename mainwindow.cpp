@@ -65,6 +65,9 @@ void MainWindow::tcp_connected()
     ui->connectButton->setEnabled(true);
     ui->sendButton->setEnabled(true);
     ui->pingCheckBox->setEnabled(true);
+    QTextCursor cursor = ui->sendEdit->textCursor();
+    cursor.movePosition(QTextCursor::End);
+    ui->sendEdit->setTextCursor(cursor);
 }
 
 void MainWindow::tcp_disconnected()
@@ -132,11 +135,14 @@ void MainWindow::receiveEdit_append(QString qString){
 
 void MainWindow::keyPressEvent(QKeyEvent  *event)
 {
-    if (event->key() == Qt::Key_Enter || event->key() == Qt::Key_Return)
+    if(event->modifiers() && Qt::ControlModifier)
     {
-        if(ui->sendEdit->hasFocus() && ui->sendButton->isEnabled())
+        if (event->key() == Qt::Key_Enter || event->key() == Qt::Key_Return)
         {
-            tcp_sendData();
+            if(ui->sendEdit->hasFocus() && ui->sendButton->isEnabled())
+            {
+                tcp_sendData();
+            }
         }
     }
 }
