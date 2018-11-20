@@ -3,6 +3,8 @@
 #include <QDebug>
 #include <QMessageBox>
 #include <QTimer>
+#include <QDir>
+#include <QDateTime>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -23,8 +25,13 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->urlLineEdit, SIGNAL(returnPressed()), this, SLOT(click_connectButton()));
     connect(ui->portLineEdit, SIGNAL(returnPressed()), this, SLOT(click_connectButton()));
 
-    qSettings = new QSettings ("config.ini",QSettings::IniFormat);
-    QString url = qSettings->value("url").toString();
+    #ifdef Q_OS_WIN
+        qSettings=new QSettings ("config.ini",QSettings::IniFormat);
+    #endif
+    #ifdef Q_OS_MACOS
+        qSettings=new QSettings (QDir().homePath()+"/Library/Preferences/MagicSocketDebugger/config.ini",QSettings::IniFormat);
+    #endif
+    QString url = qSettings->value("url").toString();    
     QString port = qSettings->value("port").toString();
     QString sendText=qSettings->value("sendText").toString();
     QString pingInterval=qSettings->value("pingInterval").toString();
@@ -32,6 +39,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->urlLineEdit->setText(url);
     ui->portLineEdit->setText(port);
     ui->sendEdit->setText(sendText);
+    ui->sendEdit->setWordWrapMode(QTextOption::WrapAnywhere);
     ui->receiveEdit->setWordWrapMode(QTextOption::WrapAnywhere);
     ui->pingIntervalEdit->setText(pingInterval);
     ui->pingDataEdit->setText(pingData);
@@ -175,7 +183,7 @@ void MainWindow::on_pingCheckBox_stateChanged(int state)
             QString qString=ui->pingDataEdit->toPlainText();
             qTcpSocket->write(qString.toUtf8());
             timer = new QTimer(this);
-            connect(timer, SIGNAL(timeout()), this, SLOT(on_ping_interval_time_timeout()));
+            connect(timer, SIGNAL(timeout()), this, SLOT(ping_interval_time_timeout()));
             timer->start(pingInterval);
         }
     }
@@ -193,7 +201,7 @@ void MainWindow::on_pingCheckBox_stateChanged(int state)
 
 }
 
-void MainWindow::on_ping_interval_time_timeout()
+void MainWindow::ping_interval_time_timeout()
 {
     QString qString=ui->pingDataEdit->toPlainText();
     qTcpSocket->write(qString.toUtf8());
