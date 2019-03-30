@@ -5,44 +5,46 @@
 #include <QTimer>
 #include <QDir>
 #include <QDateTime>
+#include <QTextCodec>
+#include <QInputDialog>
+#include <QLineEdit>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
-    ui->setupUi(this);
+    ui->setupUi(this);   
 
-    this->timer=nullptr;
-    this->qTcpSocket=nullptr;
+    connect(ui->treeWidget,SIGNAL(itemClicked(QTreeWidgetItem*,int)), this,SLOT(connectionClicked(QTreeWidgetItem* ,int)));
 
-    ui->urlLineEdit->setFocus();
-    QWidget::setTabOrder(ui->urlLineEdit,ui->portLineEdit);
-    QWidget::setTabOrder(ui->portLineEdit,ui->sendEdit);
-    QWidget::setTabOrder(ui->sendEdit,ui->receiveEdit);
-    QWidget::setTabOrder(ui->receiveEdit,ui->pingIntervalEdit);
-    QWidget::setTabOrder(ui->pingIntervalEdit,ui->pingDataEdit);
+    qTreeWidgetItemClient=ui->treeWidget->topLevelItem(0);
+    qTreeWidgetItemServer=ui->treeWidget->topLevelItem(1);
 
-    connect(ui->urlLineEdit, SIGNAL(returnPressed()), this, SLOT(click_connectButton()));
-    connect(ui->portLineEdit, SIGNAL(returnPressed()), this, SLOT(click_connectButton()));
+//    ui->urlLineEdit->setFocus();
+//    QWidget::setTabOrder(ui->urlLineEdit,ui->portLineEdit);
+//    QWidget::setTabOrder(ui->portLineEdit,ui->sendEdit);
+//    QWidget::setTabOrder(ui->sendEdit,ui->receiveEdit);
+//    QWidget::setTabOrder(ui->receiveEdit,ui->pingIntervalEdit);
+//    QWidget::setTabOrder(ui->pingIntervalEdit,ui->pingDataEdit);
 
-    #ifdef Q_OS_WIN
-        qSettings=new QSettings ("config.ini",QSettings::IniFormat);
-    #endif
-    #ifdef Q_OS_MACOS
-        qSettings=new QSettings (QDir().homePath()+"/Library/Preferences/MagicSocketDebugger/config.ini",QSettings::IniFormat);
-    #endif
-    QString url = qSettings->value("url").toString();    
-    QString port = qSettings->value("port").toString();
-    QString sendText=qSettings->value("sendText").toString();
-    QString pingInterval=qSettings->value("pingInterval").toString();
-    QString pingData=qSettings->value("pingData").toString();
-    ui->urlLineEdit->setText(url);
-    ui->portLineEdit->setText(port);
-    ui->sendEdit->setText(sendText);
-    ui->sendEdit->setWordWrapMode(QTextOption::WrapAnywhere);
-    ui->receiveEdit->setWordWrapMode(QTextOption::WrapAnywhere);
-    ui->pingIntervalEdit->setText(pingInterval);
-    ui->pingDataEdit->setText(pingData);
+//    #ifdef Q_OS_WIN
+//        qSettings=new QSettings ("config.ini",QSettings::IniFormat);
+//    #endif
+//    #ifdef Q_OS_MACOS
+//        qSettings=new QSettings (QDir().homePath()+"/Library/Preferences/MagicSocketDebugger/config.ini",QSettings::IniFormat);
+//    #endif
+//    QString url = qSettings->value("url").toString();
+//    QString port = qSettings->value("port").toString();
+//    QString sendText=qSettings->value("sendText").toString();
+//    QString pingInterval=qSettings->value("pingInterval").toString();
+//    QString pingData=qSettings->value("pingData").toString();
+//    ui->urlLineEdit->setText(url);
+//    ui->portLineEdit->setText(port);
+//    ui->sendEdit->setText(sendText);
+//    ui->sendEdit->setWordWrapMode(QTextOption::WrapAnywhere);
+//    ui->receiveEdit->setWordWrapMode(QTextOption::WrapAnywhere);
+//    ui->pingIntervalEdit->setText(pingInterval);
+//    ui->pingDataEdit->setText(pingData);
 
 }
 
@@ -52,160 +54,149 @@ MainWindow::~MainWindow()
     delete qSettings;
 }
 
-void MainWindow::on_connectButton_clicked()
+void MainWindow::on_createClient_triggered()
 {
-    if(ui->connectButton->text()=="连接"){
-        tcp_connect();
-    }
-    else if(ui->connectButton->text()=="断开连接")
+    hideAllConnectionWidget();
+    QTreeWidgetItem *qTreeWidgetItem1=new QTreeWidgetItem();
+    qTreeWidgetItem1->setText(0,"新的客户端");
+    qTreeWidgetItemClient->insertChild(0,qTreeWidgetItem1);
+    ui->treeWidget->setCurrentItem(qTreeWidgetItem1);
+    long key=reinterpret_cast<long>(qTreeWidgetItem1);
+//    qDebug()<<qTreeWidgetItem1;
+    Client *client=new Client(qTreeWidgetItem1,ui->gridLayout_2);
+    ui->treeWidget->expandAll();
+    clientList.insert(key,client);
+    ui->deleteConnection->setEnabled(true);
+//    qDebug()<<client;
+}
+
+void MainWindow::hideAllConnectionWidget(){
+    for (int i=0;i<ui->gridLayout_2->layout()->count();i++)
     {
-        tcp_disconnect();
+        QLayoutItem *item = ui->gridLayout_2->layout()->itemAt(i);
+        item->widget()->hide();
     }
 }
 
-void MainWindow::tcp_connected()
+void MainWindow::on_createServer_triggered()
 {
-    qSettings->setValue("url",ui->urlLineEdit->text());
-    qSettings->setValue("port",ui->portLineEdit->text());
-    ui->urlLineEdit->setEnabled(false);
-    ui->portLineEdit->setEnabled(false);
-    ui->connectButton->setText("断开连接");
-    ui->connectButton->setEnabled(true);
-    ui->sendButton->setEnabled(true);
-    ui->pingCheckBox->setEnabled(true);
-    QTextCursor cursor = ui->sendEdit->textCursor();
-    cursor.movePosition(QTextCursor::End);
-    ui->sendEdit->setTextCursor(cursor);
-}
-
-void MainWindow::tcp_disconnected()
-{
-    ui->urlLineEdit->setEnabled(true);
-    ui->portLineEdit->setEnabled(true);
-    ui->connectButton->setText("连接");
-    ui->sendButton->setEnabled(false);
-    ui->pingCheckBox->setEnabled(false);
-    ui->pingCheckBox->setChecked(false);
-    qTcpSocket->deleteLater();
-}
-
-void MainWindow::click_connectButton()
-{
-    if(ui->connectButton->text()=="连接"){
-        tcp_connect();
+    bool ok;
+    QString portString = QInputDialog::getText(this, "添加服务端","请输入要监听的端口", QLineEdit::Normal,"",&ok);
+    if (!ok || portString.isEmpty())
+        return;
+    quint16 port=portString.toUShort();
+    if(port==0){
+        QMessageBox::information(this,"错误","请输入正确的端口号");
     }
-}
-
-void MainWindow::tcp_readyRead()
-{
-    QTcpSocket* obj = qobject_cast<QTcpSocket*>(sender());
-    QString msg = obj->readAll();
-    receiveEdit_append(msg);
-}
-
-void MainWindow::tcp_connect()
-{
-    QString url=ui->urlLineEdit->text();
-    QString portString=ui->portLineEdit->text();
-    quint16 port=quint16(portString.toUInt());
-
-    ui->connectButton->setEnabled(false);
-    ui->connectButton->setText("正在连接...");
-
-    qTcpSocket = new QTcpSocket();
-    connect(qTcpSocket,SIGNAL(connected()),this,SLOT(tcp_connected()));
-    connect(qTcpSocket,SIGNAL(disconnected()),this,SLOT(tcp_disconnected()));
-    connect(qTcpSocket,SIGNAL(readyRead()),this,SLOT(tcp_readyRead()));
-    qTcpSocket->connectToHost(url, port);
-    if(!qTcpSocket->waitForConnected(1000)){
-        QMessageBox::information(this, "提示", "连接失败或者超时",tr("确定"));
-        ui->connectButton->setText("连接");
-        ui->connectButton->setEnabled(true);
+    hideAllConnectionWidget();
+    QTreeWidgetItem *qTreeWidgetItem1=new QTreeWidgetItem();
+    qTreeWidgetItem1->setText(0,"本机:"+QString::number(port));
+    Server *server=new Server(qTreeWidgetItem1,ui->gridLayout_2,port);
+    if(!server->start()){
+        delete qTreeWidgetItem1;
+        qTreeWidgetItem1=nullptr;
+        return;
     }
+    qTreeWidgetItemServer->addChild(qTreeWidgetItem1);
+    ui->treeWidget->setCurrentItem(qTreeWidgetItem1);
+    long key=reinterpret_cast<long>(qTreeWidgetItem1);
+    ui->treeWidget->expandAll();
+    serverList.insert(key,server);
+    ui->deleteConnection->setEnabled(true);
 }
 
-void MainWindow::tcp_disconnect()
-{
-    qTcpSocket->disconnectFromHost();
-}
-
-void MainWindow::on_sendButton_clicked()
-{
-    tcp_sendData();
-}
-
-void MainWindow::receiveEdit_append(QString qString){
-    ui->receiveEdit->append(qString);
-    QTextCursor cursor = ui->receiveEdit->textCursor();
-    cursor.movePosition(QTextCursor::End);
-    ui->receiveEdit->setTextCursor(cursor);
-}
-
-void MainWindow::keyPressEvent(QKeyEvent  *event)
-{
-    if(event->modifiers() && Qt::ControlModifier)
-    {
-        if (event->key() == Qt::Key_Enter || event->key() == Qt::Key_Return)
-        {
-            if(ui->sendEdit->hasFocus() && ui->sendButton->isEnabled())
-            {
-                tcp_sendData();
-            }
+void MainWindow::connectionClicked(QTreeWidgetItem *qTreeWidgetItem ,int column){
+    bool deleteButtonEnable=false;
+    if(qTreeWidgetItem->parent()!=nullptr){
+        if(qTreeWidgetItem->parent()==qTreeWidgetItemClient){
+            deleteButtonEnable=true;
+    //        qDebug()<<"客户端";
+            hideAllConnectionWidget();
+            long key=reinterpret_cast<long>(qTreeWidgetItem);
+            Client *client = clientList.value(key);
+            client->qWidget->show();
+        }
+        else if(qTreeWidgetItem->parent()==qTreeWidgetItemServer){
+            deleteButtonEnable=true;
+        }
+        else if(qTreeWidgetItem->parent()->parent()==qTreeWidgetItemServer){
+            deleteButtonEnable=true;
+            hideAllConnectionWidget();
+            long serverKey=reinterpret_cast<long>(qTreeWidgetItem->parent());
+            long serverConnectionKey=reinterpret_cast<long>(qTreeWidgetItem);
+            Server *server = serverList.value(serverKey);
+            server->serverConnectionList.value(serverConnectionKey)->qWidget->show();
         }
     }
+    if(deleteButtonEnable){
+        ui->deleteConnection->setEnabled(true);
+    }
+    else{
+        ui->deleteConnection->setEnabled(false);
+    }
 }
 
-void MainWindow::tcp_sendData()
+void MainWindow::on_deleteConnection_triggered()
 {
-    QString qString=ui->sendEdit->toPlainText();
-    qTcpSocket->write(qString.toUtf8());
-    qTcpSocket->waitForBytesWritten();
-    qSettings->setValue("sendText",qString);
-}
-
-void MainWindow::on_receiveClearButton_clicked()
-{
-    ui->receiveEdit->clear();
-}
-
-void MainWindow::on_pingCheckBox_stateChanged(int state)
-{
-    if(state==Qt::Checked)
-    {
-        int pingInterval=ui->pingIntervalEdit->text().toInt();
-        if(pingInterval>0)
-        {
-            pingInterval*=1000;
-            qSettings->setValue("pingInterval",ui->pingIntervalEdit->text());
-            qSettings->setValue("pingData",ui->pingDataEdit->toPlainText());
-            ui->pingIntervalEdit->setEnabled(false);
-            ui->pingDataEdit->setEnabled(false);
-            QString qString=ui->pingDataEdit->toPlainText();
-            qTcpSocket->write(qString.toUtf8());
-            timer = new QTimer(this);
-            connect(timer, SIGNAL(timeout()), this, SLOT(ping_interval_time_timeout()));
-            timer->start(pingInterval);
+    QTreeWidgetItem *qTreeWidgetItem=ui->treeWidget->currentItem();
+    QTreeWidgetItem *parent=qTreeWidgetItem->parent();
+    if(qTreeWidgetItem->parent()==qTreeWidgetItemClient){
+        long key=reinterpret_cast<long>(qTreeWidgetItem);
+        Client *client = clientList.value(key);
+        clientList.remove(key);
+        if(client!=nullptr){
+            delete client;
+            client=nullptr;
+        }
+        int p=parent->indexOfChild(qTreeWidgetItem);
+        if(parent->childCount()>0 && p!=parent->childCount()-1){
+            parent->removeChild(qTreeWidgetItem);
+            ui->treeWidget->setCurrentItem(parent->child(p));
+            long key=reinterpret_cast<long>(parent->child(p));
+            Client *client = clientList.value(key);
+            client->qWidget->show();
+        }
+        else{
+            ui->deleteConnection->setEnabled(false);
+            parent->removeChild(qTreeWidgetItem);
+            ui->treeWidget->setCurrentItem(qTreeWidgetItem->parent());
         }
     }
-    else if(state==Qt::Unchecked)
-    {
-        ui->pingIntervalEdit->setEnabled(true);
-        ui->pingDataEdit->setEnabled(true);
-        if(timer!=nullptr)
-        {
-            timer->stop();
-            delete timer;
-            timer=nullptr;
+    else if(qTreeWidgetItem->parent()==qTreeWidgetItemServer){
+        long key=reinterpret_cast<long>(qTreeWidgetItem);
+        Server *server = serverList.value(key);
+        serverList.remove(key);
+        if(server!=nullptr){
+            delete server;
+            server=nullptr;
+        }
+        int p=parent->indexOfChild(qTreeWidgetItem);
+        if(parent->childCount()>0 && p!=parent->childCount()-1){
+            parent->removeChild(qTreeWidgetItem);
+            ui->treeWidget->setCurrentItem(parent->child(p));
+        }
+        else{
+            ui->deleteConnection->setEnabled(false);
+            parent->removeChild(qTreeWidgetItem);
+            ui->treeWidget->setCurrentItem(qTreeWidgetItem->parent());
+        }
+    }
+    else if(qTreeWidgetItem->parent()->parent()==qTreeWidgetItemServer){
+        long parentKey=reinterpret_cast<long>(qTreeWidgetItem->parent());
+        long childKey=reinterpret_cast<long>(qTreeWidgetItem);
+        int p=parent->indexOfChild(qTreeWidgetItem);
+        Server *server = serverList.value(parentKey);
+        server->deleteServerConnection(childKey);
+        if(parent->childCount()>0){
+            ui->treeWidget->setCurrentItem(parent->child(p));
+        }
+        else{
+            ui->deleteConnection->setEnabled(false);
+            ui->treeWidget->setCurrentItem(parent);
         }
     }
 
+//    QGridLayout *qGridLayout=reinterpret_cast<QGridLayout *>(test);
+//    qDebug()<<qGridLayout->layout()->count();
+
 }
-
-void MainWindow::ping_interval_time_timeout()
-{
-    QString qString=ui->pingDataEdit->toPlainText();
-    qTcpSocket->write(qString.toUtf8());
-}
-
-
-

@@ -5,6 +5,10 @@
 #include <QTcpSocket>
 #include <QKeyEvent>
 #include <QSettings>
+#include <QHash>
+#include <QTreeWidgetItem>
+#include "client.h"
+#include "server.h"
 
 namespace Ui {
     class MainWindow;
@@ -17,28 +21,22 @@ class MainWindow : public QMainWindow
     public:
         explicit MainWindow(QWidget *parent = nullptr);
         ~MainWindow();
+        void hideAllConnectionWidget();
 
     private slots:
-        void on_connectButton_clicked();
-        void tcp_connected();
-        void tcp_disconnected();
-        void click_connectButton();
-        void tcp_connect();
-        void tcp_disconnect();
-        void tcp_readyRead();
-        void on_sendButton_clicked();
-        void keyPressEvent(QKeyEvent  *event);
-        void on_receiveClearButton_clicked();
-        void on_pingCheckBox_stateChanged(int state);
-        void ping_interval_time_timeout();
+        void on_createClient_triggered();        
+        void on_createServer_triggered();
+        void connectionClicked(QTreeWidgetItem* ,int);
+        void on_deleteConnection_triggered();
 
-    private:
-        Ui::MainWindow *ui;
-        QTcpSocket* qTcpSocket;
-        QTimer *timer;
+private:
+        Ui::MainWindow *ui;        
         QSettings *qSettings;
-        void receiveEdit_append(QString qString);
-        void tcp_sendData();
+        QHash<long,Client*> clientList;
+        QHash<long,Server*> serverList;
+        QTreeWidgetItem *qTreeWidgetItemClient;
+        QTreeWidgetItem *qTreeWidgetItemServer;
+
 };
 
 #endif // MAINWINDOW_H
