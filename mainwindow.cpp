@@ -51,7 +51,7 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
     delete ui;
-    delete qSettings;
+//    delete qSettings;
 }
 
 void MainWindow::on_createClient_triggered()
