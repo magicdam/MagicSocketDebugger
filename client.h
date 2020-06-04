@@ -31,11 +31,15 @@ private slots:
     void tcp_connect();
     void tcp_disconnect();
     void tcp_readyRead();
+    void tcp_stateChanged(QAbstractSocket::SocketState);
     void on_sendButton_clicked();
 //    void keyPressEvent(QKeyEvent  *event);
     void on_receiveClearButton_clicked();
     void on_pingCheckBox_stateChanged(int state);
     void ping_interval_time_timeout();
+
+public slots:
+
 };
 
 #endif // CLIENT_H

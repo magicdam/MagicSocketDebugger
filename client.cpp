@@ -3,6 +3,7 @@
 #include <QMessageBox>
 #include <QTimer>
 #include <mainwindow.h>
+#include <QDebug>
 
 Client::Client(QTreeWidgetItem *qTreeWidgetItem,QGridLayout *qGridLayoutParent):Connection(qGridLayoutParent)
 {
@@ -79,6 +80,13 @@ Client::~Client(){
         qTcpSocket->deleteLater();
         qTcpSocket=nullptr;
     }
+//    if(connectToServer!=nullptr){
+//        if(!connectToServer->isFinished()){
+//            connectToServer->quit();
+//            connectToServer->deleteLater();
+//            connectToServer=nullptr;
+//        }
+//    }
 }
 
 void Client::on_connectButton_clicked()
@@ -90,16 +98,18 @@ void Client::on_connectButton_clicked()
     {
         tcp_disconnect();
     }
+    else if(connectButton->text()=="正在连接...")
+    {
+        qTcpSocket->abort();
+    }
 }
 
 void Client::tcp_connected()
 {
 //    qSettings->setValue("url",ui->urlLineEdit->text());
 //    qSettings->setValue("port",ui->portLineEdit->text());
-    serverAddressInput->setEnabled(false);
-    serverPortInput->setEnabled(false);
     connectButton->setText("断开连接");
-    connectButton->setEnabled(true);
+//    connectButton->setEnabled(true);
     sendButton->setEnabled(true);
     pingCheckBox->setEnabled(true);
     QTextCursor cursor = sendInput->textCursor();
@@ -109,14 +119,7 @@ void Client::tcp_connected()
 
 void Client::tcp_disconnected()
 {
-    serverAddressInput->setEnabled(true);
-    serverPortInput->setEnabled(true);
-    connectButton->setText("连接");
-    sendButton->setEnabled(false);
-    pingCheckBox->setEnabled(false);
-    pingCheckBox->setChecked(false);
-    qTcpSocket->deleteLater();
-    qTcpSocket=nullptr;
+
 }
 
 void Client::click_connectButton()
@@ -134,6 +137,29 @@ void Client::tcp_readyRead()
     receiveEdit_append(data);
 }
 
+void Client::tcp_stateChanged(QAbstractSocket::SocketState state)
+{
+//    qDebug() << state;
+    if (state == QAbstractSocket::UnconnectedState) {
+//        qDebug() << qTcpSocket->error();
+//        qDebug() << qTcpSocket->errorString();
+
+        disconnect(qTcpSocket,SIGNAL(connected()),this,SLOT(tcp_connected()));
+        disconnect(qTcpSocket,SIGNAL(disconnected()),this,SLOT(tcp_disconnected()));
+        disconnect(qTcpSocket,SIGNAL(readyRead()),this,SLOT(tcp_readyRead()));
+        disconnect(qTcpSocket,SIGNAL(stateChanged(QAbstractSocket::SocketState)),this,SLOT(tcp_stateChanged(QAbstractSocket::SocketState)));
+        qTcpSocket->deleteLater();
+        qTcpSocket=nullptr;
+
+        serverAddressInput->setEnabled(true);
+        serverPortInput->setEnabled(true);
+        connectButton->setText("连接");
+        sendButton->setEnabled(false);
+        pingCheckBox->setEnabled(false);
+        pingCheckBox->setChecked(false);
+    }
+}
+
 void Client::tcp_connect()
 {    
     QString url=serverAddressInput->text();
@@ -142,19 +168,19 @@ void Client::tcp_connect()
 
     qTreeWidgetItem->setText(0,url+":"+portString);
 
-    connectButton->setEnabled(false);
     connectButton->setText("正在连接...");
 
     qTcpSocket = new QTcpSocket();
+
     connect(qTcpSocket,SIGNAL(connected()),this,SLOT(tcp_connected()));
     connect(qTcpSocket,SIGNAL(disconnected()),this,SLOT(tcp_disconnected()));
     connect(qTcpSocket,SIGNAL(readyRead()),this,SLOT(tcp_readyRead()));
+    connect(qTcpSocket,SIGNAL(stateChanged(QAbstractSocket::SocketState)),this,SLOT(tcp_stateChanged(QAbstractSocket::SocketState)));
+
+    serverAddressInput->setEnabled(false);
+    serverPortInput->setEnabled(false);
+
     qTcpSocket->connectToHost(url, port);
-    if(!qTcpSocket->waitForConnected(5000)){
-        QMessageBox::information(nullptr, "提示", "连接失败或者超时","确定");
-        connectButton->setText("连接");
-        connectButton->setEnabled(true);
-    }
 }
 
 void Client::tcp_disconnect()
