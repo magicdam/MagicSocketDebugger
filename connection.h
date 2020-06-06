@@ -17,7 +17,7 @@ class Connection:public QObject
 {
     Q_OBJECT
     public:
-        Connection(QGridLayout *);
+        Connection(QGridLayout *, bool sendDataBtnEnable);
         ~Connection();
         QWidget* qWidget=nullptr;        
         QCheckBox* pingCheckBox=nullptr;

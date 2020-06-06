@@ -1,16 +1,16 @@
-#include "server.h"
+#include "websocket/wsserver.h"
 #include <QMessageBox>
 #include <QList>
 
-Server::Server(QTreeWidgetItem *qTreeWidgetItemServer,QGridLayout *qGridLayoutParent,quint16 port)
+WsServer::WsServer(QTreeWidgetItem *qTreeWidgetItemServer,QGridLayout *qGridLayoutParent,quint16 port)
 {
     this->qTreeWidgetItemServer=qTreeWidgetItemServer;
     this->qGridLayoutParent=qGridLayoutParent;
     this->port=port;
 }
 
-Server::~Server(){
-    QHashIterator<long,ServerConnection*> iter(serverConnectionList);
+WsServer::~WsServer(){
+    QHashIterator<long,WsServerConnection*> iter(serverConnectionList);
     QList<long> qList;
     while(iter.hasNext())
     {
@@ -19,7 +19,7 @@ Server::~Server(){
     }
 
     for(int i=0;i<qList.size();i++){
-        ServerConnection *item=serverConnectionList.value(qList.value(i));
+        WsServerConnection *item=serverConnectionList.value(qList.value(i));
         serverConnectionList.remove(qList.value(i));
         delete item;
         item=nullptr;
@@ -38,22 +38,23 @@ Server::~Server(){
     }
 }
 
-bool Server::start(){
-    server = new QTcpServer();
-    connect(server,SIGNAL(newConnection()),this,SLOT(server_new_connect()));//监听
-    if(!server->listen(QHostAddress::AnyIPv4, port)) {
+bool WsServer::start(){
+    server = new QWebSocketServer(QStringLiteral("Server"), QWebSocketServer::NonSecureMode, this);
+    if(!server->listen(QHostAddress::Any, port)) {
          QMessageBox::information(nullptr,"错误",server->errorString());
          return false;
     }
+    connect(server,SIGNAL(newConnection()),this,SLOT(connection_connected()));//监听
     return true;
 }
 
-void Server::server_new_connect() {
-    QTcpSocket *qTcpSocket = server->nextPendingConnection();
+void WsServer::connection_connected() {
+    QWebSocket *qWebSocket = server->nextPendingConnection();
+
     QTreeWidgetItem *qTreeWidgetItemConnection=new QTreeWidgetItem();
-    qTreeWidgetItemConnection->setText(0,qTcpSocket->peerAddress().toString()+":"+QString::number(qTcpSocket->peerPort()));
+    qTreeWidgetItemConnection->setText(0,qWebSocket->peerAddress().toString()+":"+QString::number(qWebSocket->peerPort()));
 //    ServerConnection *serverConnection=new ServerConnection(qTreeWidgetItemConnection,qGridLayoutParent,qTcpSocket,&deleteServerConnectionThread->qMutex,&deleteServerConnectionThread->q,&deleteServerConnectionThread->qSemaphore);
-    ServerConnection *serverConnection=new ServerConnection(qTreeWidgetItemConnection,qGridLayoutParent,qTcpSocket,&serverConnectionList,qTcpSocket->peerAddress().toString(),qTcpSocket->peerPort());
+    WsServerConnection *serverConnection=new WsServerConnection(qTreeWidgetItemConnection,qGridLayoutParent,qWebSocket,&serverConnectionList,qWebSocket->peerAddress().toString(),qWebSocket->peerPort());
     serverConnection->pingCheckBox->setEnabled(true);
     long key=reinterpret_cast<long>(qTreeWidgetItemConnection);
     serverConnectionList.insert(key,serverConnection);
@@ -61,8 +62,8 @@ void Server::server_new_connect() {
     qTreeWidgetItemServer->addChild(qTreeWidgetItemConnection);
 }
 
-void Server::deleteServerConnection(long key){
-    ServerConnection *serverConnection=serverConnectionList.value(key);
+void WsServer::deleteServerConnection(long key){
+    WsServerConnection *serverConnection=serverConnectionList.value(key);
     serverConnectionList.remove(key);
     delete serverConnection;
 }

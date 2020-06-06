@@ -1,6 +1,6 @@
-#include "serverconnection.h"
+#include "tcpserverconnection.h"
 
-ServerConnection::ServerConnection(QTreeWidgetItem *qTreeWidgetItemConnection,QGridLayout *qGridLayoutParent,QTcpSocket *qTcpSocket,QHash<long,ServerConnection*> *serverConnectionList,QString ipAddress,quint16 port):Connection(qGridLayoutParent)
+TcpServerConnection::TcpServerConnection(QTreeWidgetItem *qTreeWidgetItemConnection,QGridLayout *qGridLayoutParent,QTcpSocket *qTcpSocket,QHash<long,TcpServerConnection*> *serverConnectionList,QString ipAddress,quint16 port):Connection(qGridLayoutParent, true)
 {
     this->qTreeWidgetItem=qTreeWidgetItemConnection;
     this->qTcpSocket=qTcpSocket;
@@ -33,7 +33,7 @@ ServerConnection::ServerConnection(QTreeWidgetItem *qTreeWidgetItemConnection,QG
     connect(clearReceiveButton, SIGNAL(clicked()), this, SLOT(on_receiveClearButton_clicked()));
 }
 
-ServerConnection::~ServerConnection(){
+TcpServerConnection::~TcpServerConnection(){
 //    qDebug()<<"析构开始ServerConnection:"<<this;
     if(qLabel!=nullptr){
         delete qLabel;
@@ -74,14 +74,14 @@ ServerConnection::~ServerConnection(){
 //    qDebug()<<"析构完成ServerConnection:"<<this;
 }
 
-void ServerConnection::tcp_disconnect(){
+void TcpServerConnection::tcp_disconnect(){
     long key=reinterpret_cast<long>(qTreeWidgetItemConnection);
 //    qDebug()<<qTreeWidgetItemConnection;
     serverConnectionList->remove(key);
     delete this;
 }
 
-void ServerConnection::tcp_readyRead(){
+void TcpServerConnection::tcp_readyRead(){
     QTcpSocket* obj = qobject_cast<QTcpSocket*>(sender());
     QString data=obj->readAll();
 //    qDebug()<<data;
@@ -89,12 +89,12 @@ void ServerConnection::tcp_readyRead(){
     receiveEdit_append(data);
 }
 
-void ServerConnection::on_sendButton_clicked()
+void TcpServerConnection::on_sendButton_clicked()
 {
     tcp_sendData();
 }
 
-void ServerConnection::receiveEdit_append(QString qString){
+void TcpServerConnection::receiveEdit_append(QString qString){
     receiveInput->moveCursor(QTextCursor::End);
     receiveInput->insertPlainText(qString);
 //    receiveInput->append(qString);
@@ -103,7 +103,7 @@ void ServerConnection::receiveEdit_append(QString qString){
     receiveInput->setTextCursor(cursor);
 }
 
-void ServerConnection::tcp_sendData()
+void TcpServerConnection::tcp_sendData()
 {
     QString qString=sendInput->toPlainText();
     QByteArray qByteArray=qString.toUtf8();
@@ -113,7 +113,7 @@ void ServerConnection::tcp_sendData()
 //    qSettings->setValue("sendText",qString);
 }
 
-void ServerConnection::on_pingCheckBox_stateChanged(int state)
+void TcpServerConnection::on_pingCheckBox_stateChanged(int state)
 {
     if(state==Qt::Checked)
     {
@@ -146,13 +146,13 @@ void ServerConnection::on_pingCheckBox_stateChanged(int state)
 
 }
 
-void ServerConnection::ping_interval_time_timeout()
+void TcpServerConnection::ping_interval_time_timeout()
 {
     QString qString=pingDataInput->toPlainText();
     qTcpSocket->write(qString.toUtf8());
 }
 
-void ServerConnection::on_receiveClearButton_clicked()
+void TcpServerConnection::on_receiveClearButton_clicked()
 {
     receiveInput->clear();
 }

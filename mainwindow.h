@@ -7,8 +7,10 @@
 #include <QSettings>
 #include <QHash>
 #include <QTreeWidgetItem>
-#include "client.h"
-#include "server.h"
+#include "tcp/tcpclient.h"
+#include "tcp/tcpserver.h"
+#include "websocket/wsclient.h"
+#include "websocket/wsserver.h"
 
 namespace Ui {
     class MainWindow;
@@ -24,18 +26,25 @@ class MainWindow : public QMainWindow
         void hideAllConnectionWidget();
 
     private slots:
-        void on_createClient_triggered();        
-        void on_createServer_triggered();
+        void on_createTcpClient_triggered();
+        void on_createTcpServer_triggered();
         void connectionClicked(QTreeWidgetItem* ,int);
         void on_deleteConnection_triggered();
+        void on_createWsClient_triggered();
+
+        void on_createWsServer_triggered();
 
 private:
         Ui::MainWindow *ui;        
         QSettings *qSettings;
-        QHash<long,Client*> clientList;
-        QHash<long,Server*> serverList;
-        QTreeWidgetItem *qTreeWidgetItemClient;
-        QTreeWidgetItem *qTreeWidgetItemServer;
+        QHash<long,TcpClient*> tcpClientList;
+        QHash<long,TcpServer*> tcpServerList;
+        QHash<long,WsClient*> wsClientList;
+        QHash<long,WsServer*> wsServerList;
+        QTreeWidgetItem *qTreeWidgetItemTcpClient;
+        QTreeWidgetItem *qTreeWidgetItemTcpServer;
+        QTreeWidgetItem *qTreeWidgetItemWsClient;
+        QTreeWidgetItem *qTreeWidgetItemWsServer;
 
 };
 

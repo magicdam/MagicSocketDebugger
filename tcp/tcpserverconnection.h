@@ -1,5 +1,5 @@
-#ifndef SERVERCONNECTION_H
-#define SERVERCONNECTION_H
+#ifndef TCPSERVERCONNECTION_H
+#define TCPSERVERCONNECTION_H
 
 #include "connection.h"
 #include <QTcpSocket>
@@ -8,12 +8,12 @@
 #include <QHash>
 #include <QSemaphore>
 
-class ServerConnection:public Connection
+class TcpServerConnection:public Connection
 {
     Q_OBJECT
 public:
-    ServerConnection(QTreeWidgetItem *,QGridLayout *,QTcpSocket *,QHash<long,ServerConnection*> *,QString,quint16);
-    ~ServerConnection();
+    TcpServerConnection(QTreeWidgetItem *,QGridLayout *,QTcpSocket *,QHash<long,TcpServerConnection*> *,QString,quint16);
+    ~TcpServerConnection();
 private:
     QTcpSocket *qTcpSocket=nullptr;
     QTreeWidgetItem *qTreeWidgetItemConnection=nullptr;
@@ -24,7 +24,7 @@ private:
     QLineEdit* clientAddressInput=nullptr;
     QLineEdit* clientPortInput=nullptr;
     QTimer* timer=nullptr;
-    QHash<long,ServerConnection*> *serverConnectionList;
+    QHash<long,TcpServerConnection*> *serverConnectionList;
     void receiveEdit_append(QString qString);
     void tcp_sendData();
 

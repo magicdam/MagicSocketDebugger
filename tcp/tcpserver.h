@@ -1,21 +1,21 @@
-#ifndef SERVER_H
-#define SERVER_H
+#ifndef TCPSERVER_H
+#define TCPSERVER_H
 
-#include "serverconnection.h"
+#include "tcp/tcpserverconnection.h"
 #include <QVBoxLayout>
 #include <QTreeWidgetItem>
 #include <QTcpServer>
 #include <QHash>
 #include <QMainWindow>
 
-class Server:public QObject
+class TcpServer:public QObject
 {
     Q_OBJECT
 public:
-    Server(QTreeWidgetItem *,QGridLayout *,quint16);
-    ~Server();
+    TcpServer(QTreeWidgetItem *,QGridLayout *,quint16);
+    ~TcpServer();
     QTreeWidgetItem *qTreeWidgetItemServer=nullptr;
-    QHash<long,ServerConnection*> serverConnectionList;
+    QHash<long,TcpServerConnection*> serverConnectionList;
     bool start();
     void deleteServerConnection(long);
 private:

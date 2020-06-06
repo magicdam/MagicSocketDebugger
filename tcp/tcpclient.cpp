@@ -1,11 +1,11 @@
-#include "client.h"
+#include "tcpclient.h"
 #include <QTextCodec>
 #include <QMessageBox>
 #include <QTimer>
 #include <mainwindow.h>
 #include <QDebug>
 
-Client::Client(QTreeWidgetItem *qTreeWidgetItem,QGridLayout *qGridLayoutParent):Connection(qGridLayoutParent)
+TcpClient::TcpClient(QTreeWidgetItem *qTreeWidgetItem,QGridLayout *qGridLayoutParent):Connection(qGridLayoutParent, false)
 {
     this->qTreeWidgetItem=qTreeWidgetItem;
 
@@ -36,10 +36,9 @@ Client::Client(QTreeWidgetItem *qTreeWidgetItem,QGridLayout *qGridLayoutParent):
     connect(clearReceiveButton, SIGNAL(clicked()), this, SLOT(on_receiveClearButton_clicked()));
 
     qWidget->show();
-    //10.211.55.5
 }
 
-Client::~Client(){
+TcpClient::~TcpClient(){
     if(qLabel!=nullptr){
         delete qLabel;
         qLabel=nullptr;
@@ -80,16 +79,9 @@ Client::~Client(){
         qTcpSocket->deleteLater();
         qTcpSocket=nullptr;
     }
-//    if(connectToServer!=nullptr){
-//        if(!connectToServer->isFinished()){
-//            connectToServer->quit();
-//            connectToServer->deleteLater();
-//            connectToServer=nullptr;
-//        }
-//    }
 }
 
-void Client::on_connectButton_clicked()
+void TcpClient::on_connectButton_clicked()
 {
     if(connectButton->text()=="连接"){
         tcp_connect();
@@ -104,7 +96,7 @@ void Client::on_connectButton_clicked()
     }
 }
 
-void Client::tcp_connected()
+void TcpClient::tcp_connected()
 {
 //    qSettings->setValue("url",ui->urlLineEdit->text());
 //    qSettings->setValue("port",ui->portLineEdit->text());
@@ -117,19 +109,19 @@ void Client::tcp_connected()
     sendInput->setTextCursor(cursor);
 }
 
-void Client::tcp_disconnected()
+void TcpClient::tcp_disconnected()
 {
 
 }
 
-void Client::click_connectButton()
+void TcpClient::click_connectButton()
 {
     if(connectButton->text()=="连接"){
         tcp_connect();
     }
 }
 
-void Client::tcp_readyRead()
+void TcpClient::tcp_readyRead()
 {
     QTcpSocket* obj = qobject_cast<QTcpSocket*>(sender());
     QString data=obj->readAll();
@@ -137,7 +129,7 @@ void Client::tcp_readyRead()
     receiveEdit_append(data);
 }
 
-void Client::tcp_stateChanged(QAbstractSocket::SocketState state)
+void TcpClient::tcp_stateChanged(QAbstractSocket::SocketState state)
 {
 //    qDebug() << state;
     if (state == QAbstractSocket::UnconnectedState) {
@@ -160,7 +152,7 @@ void Client::tcp_stateChanged(QAbstractSocket::SocketState state)
     }
 }
 
-void Client::tcp_connect()
+void TcpClient::tcp_connect()
 {    
     QString url=serverAddressInput->text();
     QString portString=serverPortInput->text();
@@ -183,17 +175,17 @@ void Client::tcp_connect()
     qTcpSocket->connectToHost(url, port);
 }
 
-void Client::tcp_disconnect()
+void TcpClient::tcp_disconnect()
 {
     qTcpSocket->disconnectFromHost();
 }
 
-void Client::on_sendButton_clicked()
+void TcpClient::on_sendButton_clicked()
 {
     tcp_sendData();
 }
 
-void Client::receiveEdit_append(QString qString){
+void TcpClient::receiveEdit_append(QString qString){
     receiveInput->moveCursor(QTextCursor::End);
     receiveInput->insertPlainText(qString);
 //    receiveInput->append(qString);
@@ -202,7 +194,7 @@ void Client::receiveEdit_append(QString qString){
     receiveInput->setTextCursor(cursor);
 }
 
-void Client::tcp_sendData()
+void TcpClient::tcp_sendData()
 {
     QString qString=sendInput->toPlainText();
     QByteArray qByteArray=qString.toUtf8();
@@ -212,12 +204,12 @@ void Client::tcp_sendData()
 //    qSettings->setValue("sendText",qString);
 }
 
-void Client::on_receiveClearButton_clicked()
+void TcpClient::on_receiveClearButton_clicked()
 {
     receiveInput->clear();
 }
 
-void Client::on_pingCheckBox_stateChanged(int state)
+void TcpClient::on_pingCheckBox_stateChanged(int state)
 {
     if(state==Qt::Checked)
     {
@@ -250,7 +242,7 @@ void Client::on_pingCheckBox_stateChanged(int state)
 
 }
 
-void Client::ping_interval_time_timeout()
+void TcpClient::ping_interval_time_timeout()
 {
     QString qString=pingDataInput->toPlainText();
     qTcpSocket->write(qString.toUtf8());

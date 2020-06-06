@@ -17,7 +17,7 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>MagicSocketDebugger V1.1.1</string>
+   <string>MagicSocketDebugger V1.2.0</string>
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout_3">
@@ -105,12 +105,22 @@
          </column>
          <item>
           <property name="text">
-           <string>客户端</string>
+           <string>TCP客户端</string>
           </property>
          </item>
          <item>
           <property name="text">
-           <string>服务端</string>
+           <string>TCP服务端</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>WebSocket客户端</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>WebSocket服务端</string>
           </property>
          </item>
         </widget>
@@ -158,19 +168,21 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
-   <addaction name="createClient"/>
-   <addaction name="createServer"/>
+   <addaction name="createTcpClient"/>
+   <addaction name="createTcpServer"/>
+   <addaction name="createWsClient"/>
+   <addaction name="createWsServer"/>
    <addaction name="deleteConnection"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
-  <action name="createClient">
+  <action name="createTcpClient">
    <property name="text">
-    <string>创建连接</string>
+    <string>创建Tcp连接</string>
    </property>
   </action>
-  <action name="createServer">
+  <action name="createTcpServer">
    <property name="text">
-    <string>创建服务器</string>
+    <string>创建Tcp服务器</string>
    </property>
   </action>
   <action name="deleteConnection">
@@ -179,6 +191,16 @@
    </property>
    <property name="text">
     <string>删除</string>
+   </property>
+  </action>
+  <action name="createWsClient">
+   <property name="text">
+    <string>创建WebSocket连接</string>
+   </property>
+  </action>
+  <action name="createWsServer">
+   <property name="text">
+    <string>创建WebSocket服务器</string>
    </property>
   </action>
  </widget>

@@ -67,7 +67,7 @@ Connection::~Connection(){
     }
 }
 
-Connection::Connection(QGridLayout *qGridLayoutParent):QObject()
+Connection::Connection(QGridLayout *qGridLayoutParent, bool sendDataBtnEnable):QObject()
 {
     qWidget=new QWidget();
     qWidget->hide();
@@ -101,6 +101,9 @@ Connection::Connection(QGridLayout *qGridLayoutParent):QObject()
     sendButton=new QPushButton(qWidget1);
     sendButton  -> setGeometry(60,2,70,36);
     sendButton  -> setText("发送");
+    if(!sendDataBtnEnable) {
+        sendButton->setEnabled(false);
+    }
 
     sendInput=new QTextEdit();
     sendInput->setMinimumSize(0,100);

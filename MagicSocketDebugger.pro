@@ -6,6 +6,7 @@
 
 QT       += core gui
 QT       += network
+QT       += websockets
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -29,16 +30,22 @@ SOURCES += \
         main.cpp \
         mainwindow.cpp \
     connection.cpp \
-    client.cpp \
-    serverconnection.cpp \
-    server.cpp
+    tcp/tcpclient.cpp \
+    tcp/tcpserver.cpp \
+    tcp/tcpserverconnection.cpp \
+    websocket/wsclient.cpp \
+    websocket/wsserver.cpp \
+    websocket/wsserverconnection.cpp
 
 HEADERS += \
         mainwindow.h \
     connection.h \
-    client.h \
-    serverconnection.h \
-    server.h
+    tcp/tcpclient.h \
+    tcp/tcpserver.h \
+    tcp/tcpserverconnection.h \
+    websocket/wsclient.h \
+    websocket/wsserver.h \
+    websocket/wsserverconnection.h
 
 FORMS += \
         mainwindow.ui
