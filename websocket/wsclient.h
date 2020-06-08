@@ -11,19 +11,18 @@ public:
     WsClient(QTreeWidgetItem *,QGridLayout *);
     ~WsClient();
     QLineEdit* serverAddressInput=nullptr;
-    QLineEdit* serverPortInput=nullptr;
 private:
     QPushButton* connectButton=nullptr;
     QWebSocket *qWebSocket=nullptr;
     QTimer* timer=nullptr;
     QVBoxLayout* qVBoxLayoutLeft=nullptr;
     QLabel* qLabel1=nullptr;
-    QLabel* qLabel2=nullptr;
     QLabel* qLabel=nullptr;
     void receiveEdit_append(QString qString);
     void connection_sendData();
     void connectServer();
     void disconnectConnection();
+    void closeConnectionCallback();
 private slots:
     void on_connectButton_clicked();
     void connection_connected();

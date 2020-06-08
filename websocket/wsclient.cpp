@@ -15,20 +15,14 @@ WsClient::WsClient(QTreeWidgetItem *qTreeWidgetItem,QGridLayout *qGridLayoutPare
     qLabel1->setText("服务器地址：");
     qVBoxLayoutLeft->addWidget(qLabel1);
     serverAddressInput=new QLineEdit();
-    serverAddressInput->setPlaceholderText("如127.0.0.1");
+    serverAddressInput->setPlaceholderText("如ws://127.0.0.1:8080");
     qVBoxLayoutLeft->addWidget(serverAddressInput);
-    qLabel2 = new QLabel();
-    qLabel2->setText("端口：");
-    qVBoxLayoutLeft->addWidget(qLabel2);
-    serverPortInput=new QLineEdit();
-    qVBoxLayoutLeft->addWidget(serverPortInput);
     connectButton=new QPushButton();
     connectButton->setText("连接");
     qVBoxLayoutLeft->addWidget(connectButton);
 
     connect(connectButton, SIGNAL(clicked()), this, SLOT(on_connectButton_clicked()));
     connect(serverAddressInput, SIGNAL(returnPressed()), this, SLOT(click_connectButton()));
-    connect(serverPortInput, SIGNAL(returnPressed()), this, SLOT(click_connectButton()));
     connect(sendButton, SIGNAL(clicked()), this, SLOT(on_sendButton_clicked()));
     connect(pingCheckBox, SIGNAL(stateChanged(int)), this, SLOT(on_pingCheckBox_stateChanged(int)));
     connect(clearReceiveButton, SIGNAL(clicked()), this, SLOT(on_receiveClearButton_clicked()));
@@ -48,14 +42,6 @@ WsClient::~WsClient(){
     if(connectButton!=nullptr){
         delete connectButton;
         connectButton=nullptr;
-    }
-    if(serverPortInput!=nullptr){
-        delete serverPortInput;
-        serverPortInput=nullptr;
-    }
-    if(qLabel2!=nullptr){
-        delete qLabel2;
-        qLabel2=nullptr;
     }
     if(serverAddressInput!=nullptr){
         delete serverAddressInput;
@@ -90,7 +76,12 @@ void WsClient::on_connectButton_clicked()
     }
     else if(connectButton->text()=="正在连接...")
     {
-        qWebSocket->abort();
+        if (qWebSocket->isValid()) {
+            qWebSocket->abort();
+        }
+        else {
+            closeConnectionCallback();
+        }
     }
 }
 
@@ -130,29 +121,16 @@ void WsClient::tcp_stateChanged(QAbstractSocket::SocketState state)
     if (state == QAbstractSocket::UnconnectedState) {
 //        qDebug() << qTcpSocket->error();
 //        qDebug() << qTcpSocket->errorString();
+        closeConnectionCallback();
 
-        disconnect(qWebSocket,SIGNAL(connected()),this,SLOT(connection_connected()));
-        disconnect(qWebSocket,SIGNAL(disconnected()),this,SLOT(connection_disconnected()));
-        disconnect(qWebSocket,SIGNAL(textMessageReceived(QString)),this,SLOT(connection_textMessageReceived(QString)));
-        disconnect(qWebSocket,SIGNAL(stateChanged(QAbstractSocket::SocketState)),this,SLOT(tcp_stateChanged(QAbstractSocket::SocketState)));
-        qWebSocket->deleteLater();
-        qWebSocket=nullptr;
-
-        serverAddressInput->setEnabled(true);
-        serverPortInput->setEnabled(true);
-        connectButton->setText("连接");
-        sendButton->setEnabled(false);
-        pingCheckBox->setEnabled(false);
-        pingCheckBox->setChecked(false);
     }
 }
 
 void WsClient::connectServer()
 {
     QString url=serverAddressInput->text();
-    QString portString=serverPortInput->text();
 
-    qTreeWidgetItem->setText(0,url+":"+portString);
+    qTreeWidgetItem->setText(0,url);
 
     connectButton->setText("正在连接...");
 
@@ -164,16 +142,29 @@ void WsClient::connectServer()
     connect(qWebSocket,SIGNAL(stateChanged(QAbstractSocket::SocketState)),this,SLOT(tcp_stateChanged(QAbstractSocket::SocketState)));
 
     serverAddressInput->setEnabled(false);
-    serverPortInput->setEnabled(false);
 
-    QString path = QString("ws://%1:%2").arg(url).arg(portString);
-    QUrl qUrl = QUrl(path);
+    QUrl qUrl = QUrl(url);
     qWebSocket->open(qUrl);
 }
 
 void WsClient::disconnectConnection()
 {
     qWebSocket->close();
+}
+
+void WsClient::closeConnectionCallback() {
+    disconnect(qWebSocket,SIGNAL(connected()),this,SLOT(connection_connected()));
+    disconnect(qWebSocket,SIGNAL(disconnected()),this,SLOT(connection_disconnected()));
+    disconnect(qWebSocket,SIGNAL(textMessageReceived(QString)),this,SLOT(connection_textMessageReceived(QString)));
+    disconnect(qWebSocket,SIGNAL(stateChanged(QAbstractSocket::SocketState)),this,SLOT(tcp_stateChanged(QAbstractSocket::SocketState)));
+    qWebSocket->deleteLater();
+    qWebSocket=nullptr;
+
+    serverAddressInput->setEnabled(true);
+    connectButton->setText("连接");
+    sendButton->setEnabled(false);
+    pingCheckBox->setEnabled(false);
+    pingCheckBox->setChecked(false);
 }
 
 void WsClient::on_sendButton_clicked()
