@@ -90,7 +90,12 @@ void WsServerConnection::on_sendButton_clicked()
 }
 
 void WsServerConnection::receiveEdit_append(QString qString){
-    receiveInput->moveCursor(QTextCursor::End);
+    if (!receiveInput->document()->isEmpty()) {
+        receiveInput->moveCursor(QTextCursor::End);
+        receiveInput->insertPlainText("\n");
+    }
+    receiveInput->insertHtml("<font color=\"#0000FF\">" + QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss:zzz") + "</font> ");
+    receiveInput->insertPlainText("\n");
     receiveInput->insertPlainText(qString);
 //    receiveInput->append(qString);
     QTextCursor cursor = receiveInput->textCursor();
