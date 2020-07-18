@@ -14,7 +14,7 @@ TARGET = MagicSocketDebugger
 TEMPLATE = app
 
 ICON = resource/icon.icns
-RC_ICONS = resource/icon.png
+RC_ICONS = resource/icon.ico
 
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which has been marked as deprecated (the exact warnings
