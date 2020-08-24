@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/i18n"/>
+    <qresource prefix="/">
+        <file>../qnote_EN.qm</file>
+        <file>../qnote_zh_CN.qm</file>
+    </qresource>
+</RCC>

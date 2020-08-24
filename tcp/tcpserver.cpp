@@ -42,7 +42,7 @@ bool TcpServer::start(){
     server = new QTcpServer();
     connect(server,SIGNAL(newConnection()),this,SLOT(server_new_connect()));//监听
     if(!server->listen(QHostAddress::AnyIPv4, port)) {
-         QMessageBox::information(nullptr,"错误",server->errorString());
+         QMessageBox::information(nullptr,tr("错误"),server->errorString());
          return false;
     }
     return true;

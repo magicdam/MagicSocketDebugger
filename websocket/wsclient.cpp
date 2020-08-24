@@ -12,13 +12,13 @@ WsClient::WsClient(QTreeWidgetItem *qTreeWidgetItem,QGridLayout *qGridLayoutPare
     qVBoxLayoutLeft = new QVBoxLayout(qWidgetLeft);
     qVBoxLayoutLeft->setAlignment(Qt::AlignTop);
     qLabel1= new QLabel();
-    qLabel1->setText("服务器地址：");
+    qLabel1->setText(tr("服务器地址："));
     qVBoxLayoutLeft->addWidget(qLabel1);
     serverAddressInput=new QLineEdit();
-    serverAddressInput->setPlaceholderText("如ws://127.0.0.1:8080");
+    serverAddressInput->setPlaceholderText(tr("如ws://127.0.0.1:8080"));
     qVBoxLayoutLeft->addWidget(serverAddressInput);
     connectButton=new QPushButton();
-    connectButton->setText("连接");
+    connectButton->setText(tr("连接"));
     qVBoxLayoutLeft->addWidget(connectButton);
 
     connect(connectButton, SIGNAL(clicked()), this, SLOT(on_connectButton_clicked()));
@@ -67,14 +67,14 @@ WsClient::~WsClient(){
 
 void WsClient::on_connectButton_clicked()
 {
-    if(connectButton->text()=="连接"){
+    if(connectButton->text()==tr("连接")){
         connectServer();
     }
-    else if(connectButton->text()=="断开连接")
+    else if(connectButton->text()==tr("断开连接"))
     {
         disconnectConnection();
     }
-    else if(connectButton->text()=="正在连接...")
+    else if(connectButton->text()==tr("正在连接..."))
     {
         if (qWebSocket->isValid()) {
             qWebSocket->abort();
@@ -89,7 +89,7 @@ void WsClient::connection_connected()
 {
 //    qSettings->setValue("url",ui->urlLineEdit->text());
 //    qSettings->setValue("port",ui->portLineEdit->text());
-    connectButton->setText("断开连接");
+    connectButton->setText(tr("断开连接"));
 //    connectButton->setEnabled(true);
     sendButton->setEnabled(true);
     pingCheckBox->setEnabled(true);
@@ -105,7 +105,7 @@ void WsClient::connection_disconnected()
 
 void WsClient::click_connectButton()
 {
-    if(connectButton->text()=="连接"){
+    if(connectButton->text()==tr("连接")){
         connectServer();
     }
 }
@@ -132,7 +132,7 @@ void WsClient::connectServer()
 
     qTreeWidgetItem->setText(0,url);
 
-    connectButton->setText("正在连接...");
+    connectButton->setText(tr("正在连接..."));
 
     qWebSocket = new QWebSocket();
 
@@ -161,7 +161,7 @@ void WsClient::closeConnectionCallback() {
     qWebSocket=nullptr;
 
     serverAddressInput->setEnabled(true);
-    connectButton->setText("连接");
+    connectButton->setText(tr("连接"));
     sendButton->setEnabled(false);
     pingCheckBox->setEnabled(false);
     pingCheckBox->setChecked(false);

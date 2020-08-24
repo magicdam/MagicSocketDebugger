@@ -9,21 +9,21 @@ TcpServerConnection::TcpServerConnection(QTreeWidgetItem *qTreeWidgetItemConnect
     qVBoxLayoutLeft = new QVBoxLayout(qWidgetLeft);
     qVBoxLayoutLeft->setAlignment(Qt::AlignTop);
     qLabel1= new QLabel();
-    qLabel1->setText("客户端地址：");
+    qLabel1->setText(tr("客户端地址："));
     qVBoxLayoutLeft->addWidget(qLabel1);
     clientAddressInput=new QLineEdit();
     clientAddressInput->setText(ipAddress);
     clientAddressInput->setEnabled(false);
     qVBoxLayoutLeft->addWidget(clientAddressInput);
     qLabel2 = new QLabel();
-    qLabel2->setText("端口：");
+    qLabel2->setText(tr("端口："));
     qVBoxLayoutLeft->addWidget(qLabel2);
     clientPortInput=new QLineEdit();
     clientPortInput->setText(QString::number(port));
     clientPortInput->setEnabled(false);
     qVBoxLayoutLeft->addWidget(clientPortInput);
     qLabel=new QLabel();
-    qLabel->setText("编码:UTF-8");
+    qLabel->setText(tr("编码:UTF-8"));
     qVBoxLayoutLeft->addWidget(qLabel);
 
     connect(qTcpSocket, SIGNAL(readyRead()),this,SLOT(tcp_readyRead()));

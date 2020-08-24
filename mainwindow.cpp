@@ -8,12 +8,14 @@
 #include <QTextCodec>
 #include <QInputDialog>
 #include <QLineEdit>
+#include <QDir>
+#include <QDesktopServices>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
-    ui->setupUi(this);   
+    ui->setupUi(this);
 
     connect(ui->treeWidget,SIGNAL(itemClicked(QTreeWidgetItem*,int)), this,SLOT(connectionClicked(QTreeWidgetItem* ,int)));
 
@@ -22,31 +24,15 @@ MainWindow::MainWindow(QWidget *parent) :
     qTreeWidgetItemWsClient=ui->treeWidget->topLevelItem(2);
     qTreeWidgetItemWsServer=ui->treeWidget->topLevelItem(3);
 
-//    ui->urlLineEdit->setFocus();
-//    QWidget::setTabOrder(ui->urlLineEdit,ui->portLineEdit);
-//    QWidget::setTabOrder(ui->portLineEdit,ui->sendEdit);
-//    QWidget::setTabOrder(ui->sendEdit,ui->receiveEdit);
-//    QWidget::setTabOrder(ui->receiveEdit,ui->pingIntervalEdit);
-//    QWidget::setTabOrder(ui->pingIntervalEdit,ui->pingDataEdit);
-
-//    #ifdef Q_OS_WIN
-//        qSettings=new QSettings ("config.ini",QSettings::IniFormat);
-//    #endif
-//    #ifdef Q_OS_MACOS
-//        qSettings=new QSettings (QDir().homePath()+"/Library/Preferences/MagicSocketDebugger/config.ini",QSettings::IniFormat);
-//    #endif
-//    QString url = qSettings->value("url").toString();
-//    QString port = qSettings->value("port").toString();
-//    QString sendText=qSettings->value("sendText").toString();
-//    QString pingInterval=qSettings->value("pingInterval").toString();
-//    QString pingData=qSettings->value("pingData").toString();
-//    ui->urlLineEdit->setText(url);
-//    ui->portLineEdit->setText(port);
-//    ui->sendEdit->setText(sendText);
-//    ui->sendEdit->setWordWrapMode(QTextOption::WrapAnywhere);
-//    ui->receiveEdit->setWordWrapMode(QTextOption::WrapAnywhere);
-//    ui->pingIntervalEdit->setText(pingInterval);
-//    ui->pingDataEdit->setText(pingData);
+    QVariant language = MainWindow::qSettings->value("language");
+    if (!language.isNull()) {
+        QString languageName = language.toString();
+        if (languageName == "chs") {
+            ui->actionLanguageChinese->setChecked(true);
+        } else if (languageName == "en") {
+            ui->actionLanguageEnglish->setChecked(true);
+        }
+    }
 
 }
 
@@ -60,7 +46,7 @@ void MainWindow::on_createTcpClient_triggered()
 {
     hideAllConnectionWidget();
     QTreeWidgetItem *qTreeWidgetItem1=new QTreeWidgetItem();
-    qTreeWidgetItem1->setText(0,"新的客户端");
+    qTreeWidgetItem1->setText(0,tr("新的客户端"));
     qTreeWidgetItemTcpClient->insertChild(0,qTreeWidgetItem1);
     ui->treeWidget->setCurrentItem(qTreeWidgetItem1);
     long key=reinterpret_cast<long>(qTreeWidgetItem1);
@@ -76,7 +62,7 @@ void MainWindow::on_createWsClient_triggered()
 {
     hideAllConnectionWidget();
     QTreeWidgetItem *qTreeWidgetItem1=new QTreeWidgetItem();
-    qTreeWidgetItem1->setText(0,"新的客户端");
+    qTreeWidgetItem1->setText(0, tr("新的客户端"));
     qTreeWidgetItemWsClient->insertChild(0,qTreeWidgetItem1);
     ui->treeWidget->setCurrentItem(qTreeWidgetItem1);
     long key=reinterpret_cast<long>(qTreeWidgetItem1);
@@ -99,16 +85,16 @@ void MainWindow::hideAllConnectionWidget(){
 void MainWindow::on_createTcpServer_triggered()
 {
     bool ok;
-    QString portString = QInputDialog::getText(this, "添加服务端","请输入要监听的端口", QLineEdit::Normal,"",&ok);
+    QString portString = QInputDialog::getText(this, tr("添加服务端"),tr("请输入要监听的端口"), QLineEdit::Normal,"",&ok);
     if (!ok || portString.isEmpty())
         return;
     quint16 port=portString.toUShort();
     if(port==0){
-        QMessageBox::information(this,"错误","请输入正确的端口号");
+        QMessageBox::information(this,tr("错误"),tr("请输入正确的端口号"));
     }
     hideAllConnectionWidget();
     QTreeWidgetItem *qTreeWidgetItem1=new QTreeWidgetItem();
-    qTreeWidgetItem1->setText(0,"本机:"+QString::number(port));
+    qTreeWidgetItem1->setText(0,tr("本机:") + QString::number(port));
     TcpServer *server=new TcpServer(qTreeWidgetItem1,ui->gridLayout_2,port);
     if(!server->start()){
         delete qTreeWidgetItem1;
@@ -126,16 +112,16 @@ void MainWindow::on_createTcpServer_triggered()
 void MainWindow::on_createWsServer_triggered()
 {
     bool ok;
-    QString portString = QInputDialog::getText(this, "添加服务端","请输入要监听的端口", QLineEdit::Normal,"",&ok);
+    QString portString = QInputDialog::getText(this, tr("添加服务端"),tr("请输入要监听的端口"), QLineEdit::Normal,"",&ok);
     if (!ok || portString.isEmpty())
         return;
     quint16 port=portString.toUShort();
     if(port==0){
-        QMessageBox::information(this,"错误","请输入正确的端口号");
+        QMessageBox::information(this,tr("错误"),tr("请输入正确的端口号"));
     }
     hideAllConnectionWidget();
     QTreeWidgetItem *qTreeWidgetItem1=new QTreeWidgetItem();
-    qTreeWidgetItem1->setText(0,"本机:"+QString::number(port));
+    qTreeWidgetItem1->setText(0,tr("本机:") + QString::number(port));
     WsServer *server=new WsServer(qTreeWidgetItem1,ui->gridLayout_2,port);
     if(!server->start()){
         delete qTreeWidgetItem1;
@@ -316,4 +302,30 @@ void MainWindow::on_deleteConnection_triggered()
 //    QGridLayout *qGridLayout=reinterpret_cast<QGridLayout *>(test);
 //    qDebug()<<qGridLayout->layout()->count();
 
+}
+
+void MainWindow::on_actionLanguageChinese_triggered()
+{
+    qSettings->setValue("language", "chs");
+    uncheckedAllActionLanguage();
+    ui->actionLanguageChinese->setChecked(true);
+    QMessageBox::information(this,tr("提示"),tr("重启应用后生效"));
+}
+
+void MainWindow::on_actionLanguageEnglish_triggered()
+{
+    qSettings->setValue("language", "en");
+    uncheckedAllActionLanguage();
+    ui->actionLanguageEnglish->setChecked(true);
+    QMessageBox::information(this,tr("提示"),tr("重启应用后生效"));
+}
+
+void MainWindow::uncheckedAllActionLanguage() {
+    ui->actionLanguageEnglish->setChecked(false);
+    ui->actionLanguageChinese->setChecked(false);
+}
+
+void MainWindow::on_actionFeedback_triggered()
+{
+    QDesktopServices::openUrl(QUrl(QLatin1String("https://github.com/magicdam/MagicSocketDebugger/issues")));
 }

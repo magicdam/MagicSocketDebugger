@@ -41,7 +41,7 @@ WsServer::~WsServer(){
 bool WsServer::start(){
     server = new QWebSocketServer(QStringLiteral("Server"), QWebSocketServer::NonSecureMode, this);
     if(!server->listen(QHostAddress::Any, port)) {
-         QMessageBox::information(nullptr,"错误",server->errorString());
+         QMessageBox::information(nullptr,tr("错误"),server->errorString());
          return false;
     }
     connect(server,SIGNAL(newConnection()),this,SLOT(connection_connected()));//监听

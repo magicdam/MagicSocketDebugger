@@ -12,20 +12,20 @@ TcpClient::TcpClient(QTreeWidgetItem *qTreeWidgetItem,QGridLayout *qGridLayoutPa
     qVBoxLayoutLeft = new QVBoxLayout(qWidgetLeft);
     qVBoxLayoutLeft->setAlignment(Qt::AlignTop);
     qLabel1= new QLabel();
-    qLabel1->setText("服务器地址：");
+    qLabel1->setText(tr("服务器地址："));
     qVBoxLayoutLeft->addWidget(qLabel1);
     serverAddressInput=new QLineEdit();
     qVBoxLayoutLeft->addWidget(serverAddressInput);
     qLabel2 = new QLabel();
-    qLabel2->setText("端口：");
+    qLabel2->setText(tr("端口："));
     qVBoxLayoutLeft->addWidget(qLabel2);
     serverPortInput=new QLineEdit();
     qVBoxLayoutLeft->addWidget(serverPortInput);
     connectButton=new QPushButton();
-    connectButton->setText("连接");
+    connectButton->setText(tr("连接"));
     qVBoxLayoutLeft->addWidget(connectButton);
     qLabel=new QLabel();
-    qLabel->setText("编码:UTF-8");
+    qLabel->setText(tr("编码:UTF-8"));
     qVBoxLayoutLeft->addWidget(qLabel);
 
     connect(connectButton, SIGNAL(clicked()), this, SLOT(on_connectButton_clicked()));
@@ -83,14 +83,14 @@ TcpClient::~TcpClient(){
 
 void TcpClient::on_connectButton_clicked()
 {
-    if(connectButton->text()=="连接"){
+    if(connectButton->text()==tr("连接")){
         tcp_connect();
     }
-    else if(connectButton->text()=="断开连接")
+    else if(connectButton->text()==tr("断开连接"))
     {
         tcp_disconnect();
     }
-    else if(connectButton->text()=="正在连接...")
+    else if(connectButton->text()==tr("正在连接..."))
     {
         qTcpSocket->abort();
     }
@@ -100,7 +100,7 @@ void TcpClient::tcp_connected()
 {
 //    qSettings->setValue("url",ui->urlLineEdit->text());
 //    qSettings->setValue("port",ui->portLineEdit->text());
-    connectButton->setText("断开连接");
+    connectButton->setText(tr("断开连接"));
 //    connectButton->setEnabled(true);
     sendButton->setEnabled(true);
     pingCheckBox->setEnabled(true);
@@ -116,7 +116,7 @@ void TcpClient::tcp_disconnected()
 
 void TcpClient::click_connectButton()
 {
-    if(connectButton->text()=="连接"){
+    if(connectButton->text()==tr("连接")){
         tcp_connect();
     }
 }
@@ -145,7 +145,7 @@ void TcpClient::tcp_stateChanged(QAbstractSocket::SocketState state)
 
         serverAddressInput->setEnabled(true);
         serverPortInput->setEnabled(true);
-        connectButton->setText("连接");
+        connectButton->setText(tr("连接"));
         sendButton->setEnabled(false);
         pingCheckBox->setEnabled(false);
         pingCheckBox->setChecked(false);
@@ -160,7 +160,7 @@ void TcpClient::tcp_connect()
 
     qTreeWidgetItem->setText(0,url+":"+portString);
 
-    connectButton->setText("正在连接...");
+    connectButton->setText(tr("正在连接..."));
 
     qTcpSocket = new QTcpSocket();
 

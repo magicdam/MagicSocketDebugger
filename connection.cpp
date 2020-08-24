@@ -97,10 +97,10 @@ Connection::Connection(QGridLayout *qGridLayoutParent, bool sendDataBtnEnable):Q
     qGridLayoutRight  -> addWidget(qWidget1,0,0,1,1);
     qLabel3=new QLabel(qWidget1);
     qLabel3  -> setGeometry(0,2,50,36);
-    qLabel3  -> setText("发送");
+    qLabel3  -> setText(tr("发送"));
     sendButton=new QPushButton(qWidget1);
     sendButton  -> setGeometry(60,2,70,36);
-    sendButton  -> setText("发送");
+    sendButton  -> setText(tr("发送"));
     if(!sendDataBtnEnable) {
         sendButton->setEnabled(false);
     }
@@ -119,12 +119,12 @@ Connection::Connection(QGridLayout *qGridLayoutParent, bool sendDataBtnEnable):Q
     pingCheckBox=new QCheckBox(qWidget2);
     pingCheckBox->setEnabled(false);
     pingCheckBox->setGeometry(0,2,110,36);
-    pingCheckBox->setText("心跳包");
+    pingCheckBox->setText(tr("心跳包"));
     pingIntervalInput=new QLineEdit(qWidget2);
     pingIntervalInput->setGeometry(120,9,50,22);
     qLabel4=new QLabel(qWidget2);
-    qLabel4->setGeometry(175,2,26,36);
-    qLabel4->setText("秒");
+    qLabel4->setGeometry(175,2,56,36);
+    qLabel4->setText(tr("秒"));
 
     pingDataInput=new QTextEdit();
     pingDataInput->setMinimumSize(0,50);
@@ -138,10 +138,10 @@ Connection::Connection(QGridLayout *qGridLayoutParent, bool sendDataBtnEnable):Q
     qGridLayoutRight->addWidget(qWidget3,4,0,1,1);
     qLabel5=new QLabel(qWidget3);
     qLabel5->setGeometry(0,2,50,36);
-    qLabel5->setText("接收");
+    qLabel5->setText(tr("接收"));
     clearReceiveButton=new QPushButton(qWidget3);
     clearReceiveButton->setGeometry(60,2,70,36);
-    clearReceiveButton->setText("清空");
+    clearReceiveButton->setText(tr("清空"));
 
     receiveInput=new QTextEdit();
     receiveInput->setWordWrapMode(QTextOption::WrapAnywhere);

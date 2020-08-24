@@ -1,0 +1,35 @@
+<!DOCTYPE QPH>
+<QPH language="zh">
+<phrase>
+    <source>编码:UTF-8</source>
+    <target>编码:UTF-8</target>
+</phrase>
+<phrase>
+    <source>服务器地址：</source>
+    <target>服务器地址：</target>
+</phrase>
+<phrase>
+    <source>连接</source>
+    <target>连接</target>
+</phrase>
+<phrase>
+    <source>断开连接</source>
+    <target>断开连接</target>
+</phrase>
+<phrase>
+    <source>正在连接...</source>
+    <target>正在连接...</target>
+</phrase>
+<phrase>
+    <source>错误</source>
+    <target>错误</target>
+</phrase>
+<phrase>
+    <source>客户端地址：</source>
+    <target>客户端地址：</target>
+</phrase>
+<phrase>
+    <source>端口：</source>
+    <target>端口：</target>
+</phrase>
+</QPH>

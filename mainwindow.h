@@ -24,6 +24,8 @@ class MainWindow : public QMainWindow
         explicit MainWindow(QWidget *parent = nullptr);
         ~MainWindow();
         void hideAllConnectionWidget();
+        static QSettings *qSettings;
+        static int aaa;
 
     private slots:
         void on_createTcpClient_triggered();
@@ -31,12 +33,14 @@ class MainWindow : public QMainWindow
         void connectionClicked(QTreeWidgetItem* ,int);
         void on_deleteConnection_triggered();
         void on_createWsClient_triggered();
-
         void on_createWsServer_triggered();
+        void on_actionLanguageChinese_triggered();
+        void on_actionLanguageEnglish_triggered();
+
+        void on_actionFeedback_triggered();
 
 private:
         Ui::MainWindow *ui;        
-        QSettings *qSettings;
         QHash<long,TcpClient*> tcpClientList;
         QHash<long,TcpServer*> tcpServerList;
         QHash<long,WsClient*> wsClientList;
@@ -45,6 +49,7 @@ private:
         QTreeWidgetItem *qTreeWidgetItemTcpServer;
         QTreeWidgetItem *qTreeWidgetItemWsClient;
         QTreeWidgetItem *qTreeWidgetItemWsServer;
+        void uncheckedAllActionLanguage();
 
 };
 

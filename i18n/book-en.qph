@@ -1,0 +1,35 @@
+<!DOCTYPE QPH>
+<QPH language="en">
+<phrase>
+    <source>编码:UTF-8</source>
+    <target>Encoding:UTF-8</target>
+</phrase>
+<phrase>
+    <source>服务器地址：</source>
+    <target>Server Address:</target>
+</phrase>
+<phrase>
+    <source>连接</source>
+    <target>Connect</target>
+</phrase>
+<phrase>
+    <source>断开连接</source>
+    <target>Disconnect</target>
+</phrase>
+<phrase>
+    <source>正在连接...</source>
+    <target>Connecting...</target>
+</phrase>
+<phrase>
+    <source>错误</source>
+    <target>Error</target>
+</phrase>
+<phrase>
+    <source>客户端地址：</source>
+    <target>Client Address:</target>
+</phrase>
+<phrase>
+    <source>端口：</source>
+    <target>Port:</target>
+</phrase>
+</QPH>
