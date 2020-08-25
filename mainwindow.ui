@@ -254,10 +254,7 @@
     <bool>false</bool>
    </property>
    <property name="text">
-    <string>V1.2.4</string>
-   </property>
-   <property name="toolTip">
-    <string>V1.2.4</string>
+    <string>V1.2.5</string>
    </property>
   </action>
  </widget>
