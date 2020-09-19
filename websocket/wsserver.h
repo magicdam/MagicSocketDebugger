@@ -13,7 +13,7 @@ class WsServer:public QObject
 {
     Q_OBJECT
 public:
-    WsServer(QTreeWidgetItem *,QGridLayout *,quint16);
+    WsServer(QTreeWidgetItem *, QGridLayout *, QString ip, quint16);
     ~WsServer();
     QTreeWidgetItem *qTreeWidgetItemServer=nullptr;
     QHash<long,WsServerConnection*> serverConnectionList;
@@ -23,6 +23,7 @@ private:
     QWebSocketServer *server = nullptr;
     QVBoxLayout* qVBoxLayoutLeft=nullptr;
     QGridLayout *qGridLayoutParent=nullptr;
+    QString ip;
     quint16 port;    
 private slots:
     void connection_connected();

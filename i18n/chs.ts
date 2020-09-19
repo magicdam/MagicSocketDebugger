@@ -10,24 +10,63 @@
         <translation type="unfinished">发送</translation>
     </message>
     <message>
-        <location filename="../connection.cpp" line="122"/>
+        <location filename="../connection.cpp" line="123"/>
         <source>心跳包</source>
         <translation type="unfinished">心跳包</translation>
     </message>
     <message>
-        <location filename="../connection.cpp" line="127"/>
+        <location filename="../connection.cpp" line="128"/>
         <source>秒</source>
         <translation type="unfinished">秒</translation>
     </message>
     <message>
-        <location filename="../connection.cpp" line="141"/>
+        <location filename="../connection.cpp" line="143"/>
         <source>接收</source>
         <translation type="unfinished">接收</translation>
     </message>
     <message>
-        <location filename="../connection.cpp" line="144"/>
+        <location filename="../connection.cpp" line="146"/>
         <source>清空</source>
         <translation type="unfinished">清空</translation>
+    </message>
+</context>
+<context>
+    <name>CreateServerDialog</name>
+    <message>
+        <location filename="../dialog/createserverdialog.cpp" line="15"/>
+        <source>监听地址：</source>
+        <translation type="unfinished">监听地址：</translation>
+    </message>
+    <message>
+        <location filename="../dialog/createserverdialog.cpp" line="39"/>
+        <source>监听端口：</source>
+        <translation type="unfinished">监听端口：</translation>
+    </message>
+    <message>
+        <location filename="../dialog/createserverdialog.cpp" line="49"/>
+        <source>确认</source>
+        <translation type="unfinished">确认</translation>
+    </message>
+    <message>
+        <location filename="../dialog/createserverdialog.cpp" line="53"/>
+        <source>取消</source>
+        <translation type="unfinished">取消</translation>
+    </message>
+    <message>
+        <location filename="../dialog/createserverdialog.cpp" line="116"/>
+        <location filename="../dialog/createserverdialog.cpp" line="123"/>
+        <source>提示</source>
+        <translation type="unfinished">提示</translation>
+    </message>
+    <message>
+        <location filename="../dialog/createserverdialog.cpp" line="116"/>
+        <source>请输入正确的ip地址</source>
+        <translation type="unfinished">请输入正确的ip地址</translation>
+    </message>
+    <message>
+        <location filename="../dialog/createserverdialog.cpp" line="123"/>
+        <source>请输入正确的端口号</source>
+        <translation type="unfinished">请输入正确的端口号</translation>
     </message>
 </context>
 <context>
@@ -73,90 +112,86 @@
         <translation type="unfinished">其它</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="204"/>
+        <location filename="../mainwindow.ui" line="205"/>
         <source>创建Tcp连接</source>
         <translation type="unfinished">创建Tcp连接</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="209"/>
+        <location filename="../mainwindow.ui" line="210"/>
         <source>创建Tcp服务器</source>
         <translation type="unfinished">创建Tcp服务器</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="217"/>
+        <location filename="../mainwindow.ui" line="218"/>
         <source>删除</source>
         <translation type="unfinished">删除</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="222"/>
+        <location filename="../mainwindow.ui" line="223"/>
         <source>创建WebSocket连接</source>
         <translation type="unfinished">创建WebSocket连接</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="227"/>
+        <location filename="../mainwindow.ui" line="228"/>
         <source>创建WebSocket服务器</source>
         <translation type="unfinished">创建WebSocket服务器</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="235"/>
+        <location filename="../mainwindow.ui" line="236"/>
         <source>简体中文</source>
         <translation type="unfinished">中文</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="243"/>
+        <location filename="../mainwindow.ui" line="244"/>
         <source>English</source>
         <translation type="unfinished">English</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="248"/>
+        <location filename="../mainwindow.ui" line="249"/>
         <source>问题反馈</source>
         <translation type="unfinished">问题反馈</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="49"/>
-        <location filename="../mainwindow.cpp" line="65"/>
+        <location filename="../mainwindow.ui" line="257"/>
+        <location filename="../mainwindow.ui" line="260"/>
+        <source>V1.2.6</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="48"/>
+        <location filename="../mainwindow.cpp" line="64"/>
         <source>新的客户端</source>
         <translation type="unfinished">新的客户端</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="88"/>
-        <location filename="../mainwindow.cpp" line="115"/>
         <source>添加服务端</source>
-        <translation type="unfinished">添加服务端</translation>
+        <translation type="obsolete">添加服务端</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="88"/>
-        <location filename="../mainwindow.cpp" line="115"/>
         <source>请输入要监听的端口</source>
-        <translation type="unfinished">请输入要监听的端口</translation>
+        <translation type="obsolete">请输入要监听的端口</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="93"/>
-        <location filename="../mainwindow.cpp" line="120"/>
         <source>错误</source>
-        <translation type="unfinished">错误</translation>
+        <translation type="obsolete">错误</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="93"/>
-        <location filename="../mainwindow.cpp" line="120"/>
         <source>请输入正确的端口号</source>
-        <translation type="unfinished">请输入正确的端口号</translation>
+        <translation type="obsolete">请输入正确的端口号</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="97"/>
-        <location filename="../mainwindow.cpp" line="124"/>
         <source>本机:</source>
-        <translation type="unfinished">本机:</translation>
+        <translation type="obsolete">本机:</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="312"/>
-        <location filename="../mainwindow.cpp" line="320"/>
+        <location filename="../mainwindow.cpp" line="311"/>
+        <location filename="../mainwindow.cpp" line="319"/>
         <source>提示</source>
         <translation type="unfinished">提示</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="312"/>
-        <location filename="../mainwindow.cpp" line="320"/>
+        <location filename="../mainwindow.cpp" line="311"/>
+        <location filename="../mainwindow.cpp" line="319"/>
         <source>重启应用后生效</source>
         <translation type="unfinished">重启应用后生效</translation>
     </message>
@@ -202,7 +237,7 @@
 <context>
     <name>TcpServer</name>
     <message>
-        <location filename="../tcp/tcpserver.cpp" line="45"/>
+        <location filename="../tcp/tcpserver.cpp" line="47"/>
         <source>错误</source>
         <translation type="unfinished">错误</translation>
     </message>
@@ -261,7 +296,7 @@
 <context>
     <name>WsServer</name>
     <message>
-        <location filename="../websocket/wsserver.cpp" line="44"/>
+        <location filename="../websocket/wsserver.cpp" line="46"/>
         <source>错误</source>
         <translation type="unfinished">错误</translation>
     </message>

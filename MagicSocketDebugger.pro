@@ -38,7 +38,8 @@ SOURCES += \
     tcp/tcpserverconnection.cpp \
     websocket/wsclient.cpp \
     websocket/wsserver.cpp \
-    websocket/wsserverconnection.cpp
+    websocket/wsserverconnection.cpp \
+    dialog/createserverdialog.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -48,7 +49,8 @@ HEADERS += \
     tcp/tcpserverconnection.h \
     websocket/wsclient.h \
     websocket/wsserver.h \
-    websocket/wsserverconnection.h
+    websocket/wsserverconnection.h \
+    dialog/createserverdialog.h
 
 FORMS += \
         mainwindow.ui

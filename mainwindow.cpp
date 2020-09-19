@@ -33,7 +33,6 @@ MainWindow::MainWindow(QWidget *parent) :
             ui->actionLanguageEnglish->setChecked(true);
         }
     }
-
 }
 
 MainWindow::~MainWindow()
@@ -84,23 +83,23 @@ void MainWindow::hideAllConnectionWidget(){
 
 void MainWindow::on_createTcpServer_triggered()
 {
-    bool ok;
-    QString portString = QInputDialog::getText(this, tr("添加服务端"),tr("请输入要监听的端口"), QLineEdit::Normal,"",&ok);
-    if (!ok || portString.isEmpty())
-        return;
-    quint16 port=portString.toUShort();
-    if(port==0){
-        QMessageBox::information(this,tr("错误"),tr("请输入正确的端口号"));
-    }
+    createTcpServerDialog = new CreateServerDialog(this);
+    connect(createTcpServerDialog, SIGNAL(confirm(QString, quint16)), this, SLOT(dialog_createTcpServer_confirm(QString, quint16)));
+    createTcpServerDialog->exec();
+}
+
+void MainWindow::dialog_createTcpServer_confirm(QString ip, quint16 port)
+{
     hideAllConnectionWidget();
     QTreeWidgetItem *qTreeWidgetItem1=new QTreeWidgetItem();
-    qTreeWidgetItem1->setText(0,tr("本机:") + QString::number(port));
-    TcpServer *server=new TcpServer(qTreeWidgetItem1,ui->gridLayout_2,port);
+    qTreeWidgetItem1->setText(0,ip + ":" + QString::number(port));
+    TcpServer *server=new TcpServer(qTreeWidgetItem1, ui->gridLayout_2, ip, port);
     if(!server->start()){
         delete qTreeWidgetItem1;
         qTreeWidgetItem1=nullptr;
         return;
     }
+    createTcpServerDialog->close();
     qTreeWidgetItemTcpServer->addChild(qTreeWidgetItem1);
     ui->treeWidget->setCurrentItem(qTreeWidgetItem1);
     long key=reinterpret_cast<long>(qTreeWidgetItem1);
@@ -111,23 +110,23 @@ void MainWindow::on_createTcpServer_triggered()
 
 void MainWindow::on_createWsServer_triggered()
 {
-    bool ok;
-    QString portString = QInputDialog::getText(this, tr("添加服务端"),tr("请输入要监听的端口"), QLineEdit::Normal,"",&ok);
-    if (!ok || portString.isEmpty())
-        return;
-    quint16 port=portString.toUShort();
-    if(port==0){
-        QMessageBox::information(this,tr("错误"),tr("请输入正确的端口号"));
-    }
+    createWsServerDialog = new CreateServerDialog(this);
+    connect(createWsServerDialog, SIGNAL(confirm(QString, quint16)), this, SLOT(dialog_createWsServer_confirm(QString, quint16)));
+    createWsServerDialog->exec();
+}
+
+void MainWindow::dialog_createWsServer_confirm(QString ip, quint16 port)
+{
     hideAllConnectionWidget();
     QTreeWidgetItem *qTreeWidgetItem1=new QTreeWidgetItem();
-    qTreeWidgetItem1->setText(0,tr("本机:") + QString::number(port));
-    WsServer *server=new WsServer(qTreeWidgetItem1,ui->gridLayout_2,port);
+    qTreeWidgetItem1->setText(0,ip + ":" + QString::number(port));
+    WsServer *server=new WsServer(qTreeWidgetItem1, ui->gridLayout_2, ip, port);
     if(!server->start()){
         delete qTreeWidgetItem1;
         qTreeWidgetItem1=nullptr;
         return;
     }
+    createWsServerDialog->close();
     qTreeWidgetItemWsServer->addChild(qTreeWidgetItem1);
     ui->treeWidget->setCurrentItem(qTreeWidgetItem1);
     long key=reinterpret_cast<long>(qTreeWidgetItem1);

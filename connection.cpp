@@ -106,6 +106,7 @@ Connection::Connection(QGridLayout *qGridLayoutParent, bool sendDataBtnEnable):Q
     }
 
     sendInput=new QTextEdit();
+    sendInput->setAcceptRichText(false);
     sendInput->setMinimumSize(0,100);
     sendInput->setMaximumSize(16777215,200);
     sendInput->setWordWrapMode(QTextOption::WrapAnywhere);
@@ -127,6 +128,7 @@ Connection::Connection(QGridLayout *qGridLayoutParent, bool sendDataBtnEnable):Q
     qLabel4->setText(tr("秒"));
 
     pingDataInput=new QTextEdit();
+    pingDataInput->setAcceptRichText(false);
     pingDataInput->setMinimumSize(0,50);
     pingDataInput->setMaximumSize(16777215,50);
     qGridLayoutRight->addWidget(pingDataInput,3,0,1,1);
@@ -144,6 +146,7 @@ Connection::Connection(QGridLayout *qGridLayoutParent, bool sendDataBtnEnable):Q
     clearReceiveButton->setText(tr("清空"));
 
     receiveInput=new QTextEdit();
+    receiveInput->setReadOnly(true);
     receiveInput->setWordWrapMode(QTextOption::WrapAnywhere);
     qGridLayoutRight->addWidget(receiveInput,5,0,1,1);        
 

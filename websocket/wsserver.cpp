@@ -2,11 +2,12 @@
 #include <QMessageBox>
 #include <QList>
 
-WsServer::WsServer(QTreeWidgetItem *qTreeWidgetItemServer,QGridLayout *qGridLayoutParent,quint16 port)
+WsServer::WsServer(QTreeWidgetItem *qTreeWidgetItemServer, QGridLayout *qGridLayoutParent, QString ip, quint16 port)
 {
-    this->qTreeWidgetItemServer=qTreeWidgetItemServer;
-    this->qGridLayoutParent=qGridLayoutParent;
-    this->port=port;
+    this->qTreeWidgetItemServer = qTreeWidgetItemServer;
+    this->qGridLayoutParent = qGridLayoutParent;
+    this->ip = ip;
+    this->port = port;
 }
 
 WsServer::~WsServer(){
@@ -40,7 +41,8 @@ WsServer::~WsServer(){
 
 bool WsServer::start(){
     server = new QWebSocketServer(QStringLiteral("Server"), QWebSocketServer::NonSecureMode, this);
-    if(!server->listen(QHostAddress::Any, port)) {
+    QHostAddress address = QHostAddress(ip);
+    if(!server->listen(address, port)) {
          QMessageBox::information(nullptr,tr("错误"),server->errorString());
          return false;
     }

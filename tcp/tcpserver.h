@@ -12,7 +12,7 @@ class TcpServer:public QObject
 {
     Q_OBJECT
 public:
-    TcpServer(QTreeWidgetItem *,QGridLayout *,quint16);
+    TcpServer(QTreeWidgetItem *, QGridLayout *, QString, quint16);
     ~TcpServer();
     QTreeWidgetItem *qTreeWidgetItemServer=nullptr;
     QHash<long,TcpServerConnection*> serverConnectionList;
@@ -22,6 +22,7 @@ private:
     QTcpServer *server = nullptr;
     QVBoxLayout* qVBoxLayoutLeft=nullptr;
     QGridLayout *qGridLayoutParent=nullptr;
+    QString ip;
     quint16 port;    
 private slots:
     void server_new_connect();

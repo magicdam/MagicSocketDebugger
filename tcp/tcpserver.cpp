@@ -2,10 +2,11 @@
 #include <QMessageBox>
 #include <QList>
 
-TcpServer::TcpServer(QTreeWidgetItem *qTreeWidgetItemServer,QGridLayout *qGridLayoutParent,quint16 port)
+TcpServer::TcpServer(QTreeWidgetItem *qTreeWidgetItemServer, QGridLayout *qGridLayoutParent, QString ip, quint16 port)
 {
     this->qTreeWidgetItemServer=qTreeWidgetItemServer;
     this->qGridLayoutParent=qGridLayoutParent;
+    this->ip = ip;
     this->port=port;
 }
 
@@ -41,7 +42,8 @@ TcpServer::~TcpServer(){
 bool TcpServer::start(){
     server = new QTcpServer();
     connect(server,SIGNAL(newConnection()),this,SLOT(server_new_connect()));//监听
-    if(!server->listen(QHostAddress::AnyIPv4, port)) {
+    QHostAddress address = QHostAddress(ip);
+    if(!server->listen(address, port)) {
          QMessageBox::information(nullptr,tr("错误"),server->errorString());
          return false;
     }
