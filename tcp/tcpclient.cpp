@@ -1,5 +1,4 @@
 #include "tcpclient.h"
-#include <QTextCodec>
 #include <QMessageBox>
 #include <QTimer>
 #include <mainwindow.h>

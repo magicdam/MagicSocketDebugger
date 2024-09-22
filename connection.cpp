@@ -73,7 +73,7 @@ Connection::Connection(QGridLayout *qGridLayoutParent, bool sendDataBtnEnable):Q
     qWidget->hide();
     qGridLayoutParent->addWidget(qWidget);
     qGridLayout=new QGridLayout(qWidget);
-    qGridLayout->setMargin(0);
+    qGridLayout->setContentsMargins(0, 0, 0, 0);
     qGridLayout->setSpacing(0);
 
     qWidgetLeft=new QWidget();
@@ -89,7 +89,7 @@ Connection::Connection(QGridLayout *qGridLayoutParent, bool sendDataBtnEnable):Q
     qGridLayout->addWidget(qWidgetRight, 0, 1, 1, 1);
 
     qGridLayoutRight=new QGridLayout(qWidgetRight);
-    qGridLayoutRight->setMargin(2);
+    qGridLayoutRight->setContentsMargins(2, 2, 2, 2);
     qWidget1=new QWidget();
 //    qWidget1->setStyleSheet("background-color: white");
     qWidget1->setMinimumSize(0,40);
